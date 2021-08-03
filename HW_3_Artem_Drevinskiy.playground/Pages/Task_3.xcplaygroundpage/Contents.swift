@@ -6,7 +6,7 @@ import Foundation
 /*
                             credit account in bank
  */
-struct bankCreditAccount {
+struct BankCreditAccount {
     let accountID: String
     var creditLimit: Double
     var creditBalance: Double
@@ -22,7 +22,7 @@ struct bankCreditAccount {
         print("Current credit balance of bankID: \(accountID) is - \(creditBalance)$")
     }
     
-    mutating func creditBalanceTransfer(to bankAccount: inout bankCreditAccount,
+    mutating func creditBalanceTransfer(to bankAccount: inout BankCreditAccount,
                                            transferAmount: Double) -> String {
         let transferAmountWithCommission = transferAmount + transferAmount * 0.01
         guard creditBalance > transferAmountWithCommission else {
@@ -59,8 +59,8 @@ struct bankCreditAccount {
         
 }
 
-var myCreditAccount = bankCreditAccount(accountID: "A000001", creditLimit: 99900)
-var myMomsCreditAccount = bankCreditAccount(accountID: "A000002", creditLimit: 2100)
+var myCreditAccount = BankCreditAccount(accountID: "A000001", creditLimit: 99900)
+var myMomsCreditAccount = BankCreditAccount(accountID: "A000002", creditLimit: 2100)
 
 
 // transfering money from myAccount to momsAccount
@@ -91,8 +91,8 @@ print("___________________________")
  
  */
 
-struct bankMixedAccount {
-    var creditAccount: bankCreditAccount
+struct BankMixedAccount {
+    var creditAccount: BankCreditAccount
     var balance: Double
     
     func showInfoAboutAccount() {
@@ -121,7 +121,7 @@ struct bankMixedAccount {
         return "Successful withdrawal"
     }
     
-    mutating func creditBalanceTransfer(to bankAccount: inout bankMixedAccount,
+    mutating func creditBalanceTransfer(to bankAccount: inout BankMixedAccount,
                                            transferAmount: Double) -> String {
         let transferAmountWithCommission = transferAmount + transferAmount * 0.01
         guard creditAccount.creditBalance > transferAmountWithCommission else {
@@ -133,7 +133,7 @@ struct bankMixedAccount {
         return "Successful transaction"
     }
     
-    mutating func transferOwnMoney(to bankAccount: inout bankMixedAccount, amount: Double) -> String {
+    mutating func transferOwnMoney(to bankAccount: inout BankMixedAccount, amount: Double) -> String {
         // if there is no money on balance at all, transfer from credit balance with commission
         guard balance != 0 else {
             return creditBalanceTransfer(to: &bankAccount, transferAmount: amount)
@@ -155,8 +155,8 @@ struct bankMixedAccount {
     }
 }
 
-var myMixedAccount = bankMixedAccount(creditAccount: myCreditAccount, balance: 1200)
-var myMomMixedAccount = bankMixedAccount(creditAccount: myMomsCreditAccount, balance: 0)
+var myMixedAccount = BankMixedAccount(creditAccount: myCreditAccount, balance: 1200)
+var myMomMixedAccount = BankMixedAccount(creditAccount: myMomsCreditAccount, balance: 0)
 
 // transfering own money to moms account
 print(myMixedAccount.transferOwnMoney(to: &myMomMixedAccount, amount: 200))
@@ -171,23 +171,23 @@ print("_______________________________")
 /*
                               bank profiles
  */
-struct bankAccountsSet {
-    var mixedBankAccount: bankMixedAccount
-    var creditBankAccount: bankCreditAccount
+struct BankAccountsSet {
+    var mixedBankAccount: BankMixedAccount
+    var creditBankAccount: BankCreditAccount
 }
 
-struct bankProfile {
+struct BankProfile {
     let ownerName: String
-    var bankAccountsSet: bankAccountsSet
-    var defaultAccount: bankMixedAccount
+    var bankAccountsSet: BankAccountsSet
+    var defaultAccount: BankMixedAccount
     
-    init (ownerName: String, bankAccountsSet: bankAccountsSet) {
+    init (ownerName: String, bankAccountsSet: BankAccountsSet) {
         self.ownerName = ownerName
         self.bankAccountsSet = bankAccountsSet
         defaultAccount = self.bankAccountsSet.mixedBankAccount
     }
      
-    mutating func deleteProfile(bankProfile: bankProfile) -> String {
+    mutating func deleteProfile(bankProfile: BankProfile) -> String {
         var indebtednessOfClient = 0.0
         let bankIndebtednessToClient = bankProfile.defaultAccount.balance
         if bankProfile.defaultAccount.creditAccount.creditBalance < bankProfile.defaultAccount.creditAccount.creditLimit {
@@ -204,8 +204,8 @@ struct bankProfile {
         
     }
 }
-var myBankAccountsSet = bankAccountsSet(mixedBankAccount: myMixedAccount, creditBankAccount: myMomsCreditAccount)
-var myBankProfile = bankProfile(ownerName: "Artem Drevinskiy", bankAccountsSet: myBankAccountsSet)
+var myBankAccountsSet = BankAccountsSet(mixedBankAccount: myMixedAccount, creditBankAccount: myMomsCreditAccount)
+var myBankProfile = BankProfile(ownerName: "Artem Drevinskiy", bankAccountsSet: myBankAccountsSet)
 print("Information about profile \(myBankProfile.ownerName):\nMain account: balance - \(myBankProfile.defaultAccount.balance)$; credit balance - \(myBankProfile.defaultAccount.creditAccount.creditBalance)$. \nCredit account: credit balance - \(myBankProfile.bankAccountsSet.creditBankAccount.creditBalance); credit limit - \(myBankProfile.bankAccountsSet.creditBankAccount.creditLimit) ")
 
 print(myBankProfile.defaultAccount.withdrawFromBalance(amount: 600))
