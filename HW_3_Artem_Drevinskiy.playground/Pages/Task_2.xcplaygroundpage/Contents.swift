@@ -3,6 +3,7 @@
 import Foundation
 
 struct Compass {
+    /// Все константы скорее относятся к типу, чем к значениям. Можно сделать `static`.
     let north = "N"        //0
     let northEast = "NE"   //45
     let east = "E"         //90
@@ -15,9 +16,13 @@ struct Compass {
     var turnAngle: Int
     
     init(angle: Int) {
-        turnAngle = angle
-        changeDirection(angle: turnAngle)
+        turnAngle = 0
+//        changeDirection(angle: turnAngle)
     }
+    
+    /// Почему у тебя в `CardinalPoints` используется угол от 0 до 360, а в компасе уже от -180 до 180?
+    /// И главный вопрос, почему же создал ты такой красивый тип `CardinalPoints`,
+    /// но не используешь его в данном задании?
     
     mutating func changeDirection(angle: Int) {
         if angle == 0 {
@@ -38,13 +43,23 @@ struct Compass {
             direction = southWest
         }
     }
+    /// Подчет выше ^^ неплохо работает, но почему Север это ровно 0 градусов,
+    /// а Северо-Восток это целый диапазон от 0 до 90? Как-то не равноценно мне кажется.
+    /// Лучше было бы распределить равномерно.
+    
+    /// Не обязательно возвращать инфу для консоли из функции. Можно просто писать `print` внутри.
     mutating func turnClockwise(angle: Int) -> String {
+        /// Здесь можно просто `if` вместо `guard`
         guard angle + turnAngle < 180 else {
+            /// А если передать в функцию угол в 420 градусов? Такой трюк не сработает :)
             turnAngle = (-180) + (angle + turnAngle - 180)
             changeDirection(angle: turnAngle)
             return "Successful turn"
         }
+        /// Лучше пиши проверки наоборот. Слева всегда то значение, которое сравниваешь с константой
+        /// Например `angle >= 0` и `angle < 180`
         guard 180 > angle && angle > 0 else {
+            /// Кажется этот `guard` должен идти первым.
             return "Wrong angle! Please enter angle from 0 to 180"
         }
         turnAngle += angle
@@ -52,6 +67,8 @@ struct Compass {
         return "Successful turn"
 
     }
+    
+    /// Все те же комменты, что и для функции выше.
     mutating func turnCounterClockwise(angle: Int) -> String {
         guard turnAngle - angle > -180 else {
             turnAngle = 180 + (turnAngle - angle + 180)
@@ -66,15 +83,21 @@ struct Compass {
         return "Successful turn"
         
     }
-    
+        
+    /// Кажется, что не хватает функции `turn(by angle: Int)`, внутри которой
+    /// будешь вызывать одну из функций `turnClockwise` или `turnCounterClockwise`
 }
+
 func showCompassInfo(compass: Compass) {
     print("Compass direction: \(compass.direction)")
     print("Compass angle: \(compass.turnAngle)")
 
+    /// Здесь нужно использовать параметр `compass` походу, а не `someCompass`
     someCompass.turnAngle
 }
-var someCompass = Compass(angle: 170)
+
+var someCompass = Compass(angle: 0)
+
 showCompassInfo(compass: someCompass)
 print(someCompass.turnClockwise(angle: 11))
 showCompassInfo(compass: someCompass)
